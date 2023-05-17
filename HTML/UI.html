@@ -1,0 +1,45 @@
+<main>
+  <nav>
+    <button id="toggle-nav">Open</button>
+    <div>
+      <label for="dp3">
+        <span>Enable <a href="https://en.wikipedia.org/wiki/DCI-P3">display-p3</a></span>
+        <input type=checkbox id="dp3" />
+      </label>
+
+      <label for="value">
+        <input type="range" min=0 max=360 value=0 id="range">
+      </label>
+    </div>
+    <div class="infos">
+      <p id=angle><span class="vars">--angle: <code contenteditable></code></span><br />The final Angle, used in the trigonometric functions</p>
+      <p id=initial-size><span class="vars">--initial-size: <code contenteditable></code></span><br />The size of the outer circle</p>
+      <p id=track-size><span class="vars">--track-size: <code contenteditable></code></span><br />The size of the "gutters"/"tracks"</p>
+      <p id=percent><span class="vars">--percent: <code contenteditable></code></span><br />The end value of the gradient</p>
+    </div>
+  </nav>
+  
+  
+  <div class="loaders">
+    <div class="loader" data-theme="blue">
+      <div class="inner"></div>
+    </div>
+    <div class="loader" data-theme="green">
+      <div class="inner"></div>
+    </div>
+    <div class="loader" data-theme="red">
+      <div class="inner"></div>
+    </div>
+  </div>
+
+</main>
+
+<svg xmlns="http://www.w3.org/2000/svg" height="0" width="0" fill="none">
+  <defs>
+    <clipPath id="path">
+      <path d="M0 86.605 50.001 0h100.005l49.999 86.605-49.999 86.605H50.001L0 86.605Z" />
+      </clipPat>
+  </defs>
+</svg>
+
+<div id="info-box" data-info-chrome="Rendering in Chrome" data-info-safari="Rendering in Safari" data-info-firefox="Rendering badly in Firefox" data-presentation-width="70vw" data-presentation-height="70vh" data-inspiration="https://apps.apple.com/fr/app/forme/id1208224953" data-hidden-onLoad="true"></div>

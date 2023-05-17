@@ -1,0 +1,255 @@
+@layer properties {
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: true;
+  }
+  @property --percent {
+    syntax: "<percent>";
+    inherits: true;
+    initial-value: 0%;
+  }
+}
+
+:root {
+  --debug: 0;
+  --bg-background: hsl(218deg 5% 14%);
+
+  --angle: 0deg;
+  --percent: 0%;
+
+  --color-blue-1: hsla(160, 100%, 50%, 1);
+  --color-blue-2: hsla(186, 100%, 49%, 1);
+  --color-green-1: hsla(85, 100%, 50%, 1);
+  --color-green-2: hsla(69, 100%, 50%, 1);
+  --color-red-1: hsla(344, 96%, 53%, 1);
+  --color-red-2: hsla(336, 94%, 60%, 1);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  outline: calc(var(--debug) * 1px) dotted
+    hsl(calc(var(--debug) * 10 * 1deg) 60% 60%);
+}
+
+html,
+body,
+main {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-background);
+  font-family: "Mona Sans", sans-serif;
+  color: white;
+
+  & main {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+
+    @media (min-width: 960px) {
+      grid-template-rows: repeat(1, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    & .loaders {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    & div.loader {
+      --track-size: 10vh;
+      --init-size: 50vh;
+      --divider: 1;
+      --size: calc(var(--init-size) / var(--divider));
+
+      @media (max-width: 960px) {
+        --track-size: 8vh;
+        --init-size: 35vh;
+        --divider: 1;
+        --size: calc(var(--init-size) / var(--divider));
+      }
+
+      // Here we nest the " .loader + .loader " so that every next .loader
+      // is styled
+      & + div.loader {
+        --divider: 1.5;
+        --size: calc(var(--init-size) / var(--divider));
+        --colors: var(--color-green-1), var(--color-green-2);
+
+        &:before {
+          background: var(--color-green-1);
+        }
+
+        &:after {
+          background: var(--color-green-2);
+        }
+
+        & + div.loader {
+          --divider: 3;
+          --size: calc(var(--init-size) / var(--divider));
+          --colors: var(--color-blue-1), var(--color-blue-2);
+
+          &:before {
+            background: var(--color-blue-1);
+          }
+
+          &:after {
+            background: var(--color-blue-2);
+          }
+        }
+      }
+
+      // If colors are display-p3
+      @supports (color: color(display-p3 0 0 0)) {
+        &.dp3-colors {
+          --color-blue-1: color(display-p3 0.39 1 0.68);
+          --color-blue-2: color(display-p3 0.28 0.88 1);
+          --color-green-1: color(display-p3 0.66 1 0.18);
+          --color-green-2: color(display-p3 0.88 1 0.21);
+          --color-red-1: color(display-p3 0.95 0.03 0.3);
+          --color-red-2: color(display-p3 0.98 0.02 0.51);
+        }
+      }
+
+      --radius: calc(var(--size) / 2 - calc(var(--track-size) / 4));
+      --colors: var(--color-red-1), var(--color-red-2);
+      width: clamp(var(--size), 5vh, 600px);
+      max-width: 600px;
+      position: absolute;
+      aspect-ratio: 1/1;
+      background: conic-gradient(
+        from 0deg at 50% 50% in oklab,
+        var(--colors) var(--percent),
+        black var(--percent)
+      );
+
+      border-radius: 1e5px;
+      animation: rotate 2s ease-in-out infinite;
+      transform-origin: center;
+
+      // Safari fix
+
+      &:before,
+      &:after {
+        content: "";
+        display: block;
+        position: absolute;
+
+        width: calc(var(--track-size) / 2);
+        aspect-ratio: 1/1;
+      }
+
+      &:before {
+        top: 0;
+        left: calc(50% - calc(var(--track-size) / 4));
+
+        background: var(--color-red-1);
+        border-radius: var(--track-size);
+      }
+
+      &:after {
+        content: "";
+        background: var(--color-red-2);
+        border-radius: var(--track-size);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        transform: rotate(var(--angle));
+        translate: calc(cos(calc(var(--angle) - 90deg) * -1) * var(--radius))
+          calc(sin(calc(var(--angle) - 90deg)) * var(--radius));
+
+        box-shadow: 6px 0 10px -4px rgb(0 0 0 / 40%);
+      }
+    }
+
+    & div.inner {
+      position: absolute;
+      width: calc(100% - var(--track-size));
+      aspect-ratio: 1/1;
+      background: var(--bg-background);
+      border-radius: 1e5px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  }
+}
+
+nav {
+  top: 0;
+  left: 0;
+  padding: 2em 2em;
+  display: grid;
+  grid-gap: 16px;
+  z-index: 2;
+  height: 50vh;
+  width: 100%;
+  backdrop-filter: blur(6px);
+  background: rgb(0 0 0 / 20%);
+  align-items: flex-start;
+
+  & .infos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 960px) {
+    height: 100%;
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 16px;
+  }
+
+  & input[type="range"] {
+    width: 60%;
+  }
+
+  & p span {
+    display: inline-block;
+    border: 1px solid rgb(255 255 255 / 50%);
+    margin-bottom: 8px;
+    padding: 4px;
+    font-weight: bold;
+  }
+
+  & code {
+    display: inline-block;
+    padding: 6px;
+    outline: 1px dashed rgb(255 255 255 / 40%);
+
+    &:focus {
+      outline-color: white;
+    }
+  }
+
+  button {
+    all: unset;
+    display: none;
+    border: 1px solid white;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}
+
+a {
+  color: rgb(255 255 255 / 80%);
+}
+
